@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <title>My Download-Server</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link href="css/styles.css" rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="//code.iconify.design/1/1.0.0-rc1/iconify.min.js"></script>
+    <script src="javascripts/main.js"></script>
+</head>
+
+<header>
+    <div
+        class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 mb-3 bg-dark border-bottom shadow-sm text-white">
+        <h4 class="my-0 mr-md-auto font-weight-normal">Download-Server</h5>
+
+            <h6 id="username" class="my-0 mr-md-auto font-weight-normal">
+            </h6>
+            <button id="loginButton" class="btn btn-light mr-2" data-toggle="modal" data-target="#loginModal">
+                Login
+                <span class="iconify icon-small" data-icon="mdi:login" data-inline="false"></span>
+            </button>
+            <button id="registerButton" class="btn btn-primary" data-toggle="modal" data-target="#registerModal">
+                Register
+                <span class="iconify icon-small" data-icon="mdi:pencil-plus" data-inline="false"></span>
+            </button>
+            <a id="adminRedirectLink" href="/admin" class="btn btn-danger" style="display: none">
+                Admin
+                <span class="iconify" data-icon="mdi:account-cog" data-inline="false"></span>
+            </a>
+</header>
+
+<body>
+    <!-- Register Modal-->
+    <div class="modal fade" id="registerModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Register</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="registerForm">
+                        <div class="form-group">
+                            <input id="focusElementRegister" type="text" class="form-control" name="name"
+                                aria-describedby="registerNameError" placeholder="Name" required>
+                            <small id="registerNameError" class="form-text text-danger"></small>
+                        </div>
+                        <div class="form-group">
+                            <input type="password" class="form-control" name="password" placeholder="Password" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="password" class="form-control" name="passwordConfirm"
+                                placeholder="Confirm Password" required aria-describedby="registerPasswordError">
+                            <small id="registerPasswordError" class="form-text text-danger"></small>
+                        </div>
+                        <button id="registerFormButton" class="btn btn-primary">
+                            Register
+                            <span class="iconify icon-small" data-icon="mdi:pencil-plus" data-inline="false"></span>
+                        </button>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Login Modal -->
+    <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Login</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <small id="registerSuccessful" class="form-text text-success" style="display: none;">Successfully
+                        registered. Please login now.</small>
+                    <form id="loginForm">
+                        <div class="form-group">
+                            <input id="focusElementLogin" type="text" class="form-control" name="username"
+                                placeholder="Name" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="password" class="form-control" name="password" placeholder="Password" required
+                                aria-describedby="loginError">
+                            <small id="loginError" class="form-text text-danger"></small>
+                        </div>
+                        <div class="form-group">
+                            <input type="checkbox" id="rememberMeCheckbox" class="form-check-input" name="rememberMe">
+                            <label for="rememberMeCheckbox" class="form-check-label">Remember Me</label>
+                        </div>
+                        <button id="loginFormButton" class="btn btn-primary">
+                            Login
+                            <span class="iconify icon-small" data-icon="mdi:login" data-inline="false"></span>
+                        </button>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- File tables -->
+    <div class="d-flex p-3 flex-lg-row flex-xl-row flex-md-column flex-sm-column">
+        <div id="publicFiles" class="flex-fill mb-4 mr-4">
+            <h4 class="justify-content-center">Public Files</h4>
+            <div class="table-responsive">
+                <table id="publicFileTable" class="table table-bordered" aria-label="Public files">
+                    <thead class="thead-light">
+                        <tr>
+                            <th scope="col">Filename</th>
+                            <th scope="col">Filesize</th>
+                            <th scope="col">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+
+            <button id="publicUploadButton" class="btn btn-lg btn-primary uploadButton float-left" type="button">
+                Upload File
+                <span class="iconify icon-medium" data-icon="mdi:upload" data-inline="false"></span>
+            </button>
+            <button id="publicDeleteAll" class="btn btn-lg btn-danger float-right" type="button">
+                DELETE ALL
+            </button>
+
+            <input id="publicUploadInput" type="file" name="uploads[]" multiple="multiple" style="display: none;"></br>
+        </div>
+
+        <div id="privateFiles" class="flex-fill">
+            <h4 class="justify-content-center">Private Files</h4>
+            <div class="table-responsive">
+                <table id="privateFileTable" class="table" aria-label="Public files">
+                    <thead class="thead-light">
+                        <tr>
+                            <th scope="col">Filename</th>
+                            <th scope="col">Filesize</th>
+                            <th scope="col">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+            <button id="privateUploadButton" class="btn btn-lg btn-info uploadButton float-left" type="button">
+                Upload File
+                <span class="iconify icon-medium" data-icon="mdi:upload" data-inline="false"></span>
+            </button>
+            <button id="privateDeleteAll" class="btn btn-lg btn-danger float-right" type="button">
+                DELETE ALL
+            </button>
+
+            <input id="privateUploadInput" type="file" name="uploads[]" multiple="multiple" style="display: none;"></br>
+        </div>
+    </div>
+    <div id="uploadContainer" class="fixed-bottom pb-4" style="font-weight: 500; font-size: 16pt;">
+        <div class="mx-auto">
+            <span>Current File: </span> <span id="uploadCurrentFileName"></span>
+        </div>
+
+        <div class="progress mx-auto w-75 position-relative" style="height: 16px;">
+            <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar">
+                <span class="justify-content-center d-flex position-absolute w-100 back">28 KB / 80 KB</span>
+                <span class="justify-content-center d-flex position-absolute w-100 front">28 KB / 80 KB</span>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

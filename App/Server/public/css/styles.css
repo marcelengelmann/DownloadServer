@@ -1,0 +1,110 @@
+.iconify-wrapper {
+    display: inline-block;
+    position: relative;
+    width: 24px;
+    height: 1em;
+}
+
+.iconify-wrapper .iconify {
+    position: absolute;
+    left: 0;
+    top: -3px;
+    font-size: 24px;
+    vertical-align: 0 !important;
+    /* instead of this line you can add data-inline="false" to icon or use
+        <iconify-icon> instead of <i> */
+}
+
+.btn-xs .iconify-wrapper,
+.btn-sm .iconify-wrapper {
+    width: 18px;
+}
+
+.btn-xs .iconify-wrapper .iconify,
+.btn-sm .iconify-wrapper .iconify {
+    font-size: 18px;
+    top: -1px;
+}
+
+.btn-lg .iconify-wrapper .iconify {
+    top: -1px;
+}
+
+.dropdown-menu .iconify-wrapper,
+.list-group-item .iconify-wrapper {
+    width: 18px;
+}
+
+.dropdown-menu .iconify-wrapper .iconify,
+.list-group-item .iconify-wrapper .iconify {
+    left: -6px;
+}
+
+html,
+body {
+    height: 100%;
+    text-align: center;
+}
+
+
+.icon-large {
+    width: 40px;
+    height: 40px;
+}
+
+.icon-medium {
+    width: 30px;
+    height: 30px;
+}
+
+.icon-small {
+    width: 20px;
+    height: 20px;
+}
+
+#uploadContainer {
+    display: show;
+    width: 100%;
+    max-height: 80px;
+    padding: 0px;
+    background-color: #e9ecef;
+    border-top: 2px solid black;
+    -moz-box-shadow: 0 -5px 6px rgba(0, 0, 0, 0.5);
+    -webkit-box-shadow: 0 -5px 6px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 -5px 6px rgba(0, 0, 0, 0.5);
+}
+
+#privateFiles {
+    display: none;
+}
+
+#uploadContainer {
+    display: none;
+}
+
+.front {
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    background: transparent;
+    color: black;
+    clip-path: inset(0 0 0 0%);
+    -webkit-clip-path: inset(0 0 0 0%);
+    transition: 0.5s;
+    font-size: 14px;
+}
+
+.back {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    background: transparent;
+    color: white;
+    font-size: 14px;
+}

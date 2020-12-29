@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <title>Marcels Download-Server</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link href="css/styles.css" rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="//code.iconify.design/1/1.0.0-rc1/iconify.min.js"></script>
+</head>
+
+<body>
+    <div class="container">
+        <div class="row text-center">
+            <div class="col text-center">
+                <button id="shutdownServerButton" class="btn btn-warning">Shutdown Server</button>
+            </div>
+        </div>
+        <div class="row text-center">
+            <div class="col text-center">
+                <button id="shutdownComputer" class="btn btn-danger">Shutdown Computer</button>
+            </div>
+        </div>
+    </div>
+</body>
+
+<script>
+    const host = window.location.host;
+    window.addEventListener("DOMContentLoaded", (event) => {
+        $("#shutdownServerButton").on("click", shutdownServerService);
+        $("#shutdownComputer").on("click", shutdownServerComputer);
+    });
+
+    function shutdownServerService() {
+        let answer = window.confirm(`Are you sure you want to shutdown the Server-Service?`);
+        if (answer) {
+            $.get(`/admin/shutdownServer`, (data, status) => {
+                if (status === "success")
+                    window.top.close();
+            });
+        }
+    }
+
+    function shutdownServerComputer() {
+        let answer = window.confirm(`Are you sure you want to shutdown the Server-Computer?`);
+        if (answer) {
+            $.get(`/admin/shutdownComputer`, (data, status) => {
+                if (status === "success")
+                    window.top.close();
+            });
+        }
+    }
+</script>
+
+</html>
