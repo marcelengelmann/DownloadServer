@@ -51,7 +51,7 @@ app.use("/", indexRouter);
 cleanFilesFolder();
 
 //start server
-const server:any = app.listen(80, function () {
+const server: any = app.listen(80, function () {
     var os = require('os');
     var networkInterfaces = os.networkInterfaces();
     var arr = networkInterfaces['Ethernet'];	
@@ -62,5 +62,5 @@ const server:any = app.listen(80, function () {
 			break;
 		}
 	}
-    console.log("Listening at http://%s:%s", ip, server.address().port);
+    console.log(`Listening at http://${ip}:${server.address().port}`);
 });

@@ -299,8 +299,10 @@ function loginSuccess(data) {
 function logoutUser(e) {
     $.get(
         `/users/logout`,
+        function (data) {
+            location.reload();
+        }
     );
-    location.reload();
 }
 
 /*
