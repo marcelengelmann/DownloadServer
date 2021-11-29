@@ -5,6 +5,7 @@ import path from "path";
 import mongoose from "mongoose";
 import bodyParser from 'body-parser';
 import session from 'express-session';
+import MongoStore from 'connect-mongo';
 import passport from 'passport';
 import { cleanFilesFolder } from "./services/cleanUP";
 
@@ -33,7 +34,8 @@ mongoose.connect('mongodb://localhost/DownloadServer',{useNewUrlParser: true, us
 app.use(session({
     secret: 'kdljse938o4wwWEE§"$7z6RGG%&$$rgdfASD@][{',
     resave : true,
-    saveUninitialized : true
+    saveUninitialized: true,
+    store: MongoStore.create({ mongoUrl: 'mongodb://localhost/DownloadServer' })
 }));
 
 //passport 

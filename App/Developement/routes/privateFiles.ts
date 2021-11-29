@@ -19,7 +19,6 @@ router.get('/', auth.ensureAuthenticated, (req: any, res) => {
 
 router.get('/downloadFile', auth.ensureAuthenticated, (req: any, res) => {
     let file = path.join(getUserFolder(req.user.name), req.query.filename as string);
-    console.log(file);
     if (fs.existsSync(file)) {
         console.log(`${req.query.filename} download started`);
         res.download(file, function (err) {

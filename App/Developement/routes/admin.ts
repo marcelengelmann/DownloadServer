@@ -35,14 +35,11 @@ router.get("/shutdownComputer", auth.ensureAdmin, (req:any, res) => {
     server.close(() => {
         console.log('Server closed.')
         console.log("shutting down computer");
-		exec('cmd /c shutdown -s -f -t 0', (err:any, stdout:any, stderr:any) => {
+		exec('cmd /c shutdown -a & shutdown -s -f -t 0', (err:any, stdout:any, stderr:any) => {
 			if (err) {
 				console.log(err);
 			}
-
-			// the *entire* stdout and stderr (buffered)
-			console.log(`stdout: ${stdout}`);
-			console.log(`stderr: ${stderr}`);
+            process.exit(0)
 		});        
     });
 });

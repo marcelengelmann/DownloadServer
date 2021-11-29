@@ -115,7 +115,7 @@ function deleteTableFiles() {
 function downloadFile(event, table) {
     const tableRow = $(event.target).closest("tr");
     let filename = tableRow.find(`td:eq(0)`).text();
-    window.location.href = `/files/${table}/downloadFile?filename=${filename}`;
+    window.location.href = `/files/${table}/downloadFile?filename=${encodeURIComponent(filename)}`;
 }
 
 
@@ -126,7 +126,7 @@ function deleteFile(event, table) {
     let answer = window.confirm(`Are you sure you want to delete the file ${filename}?`);
     if (answer) {
         $.ajax({
-            url: `/files/${table}/deleteFile?filename=${filename}`,
+            url: `/files/${table}/deleteFile?filename=${encodeURIComponent(filename)}`,
             type: 'DELETE',
             success: function (data) {
                 tableRow.fadeOut(700, () => {

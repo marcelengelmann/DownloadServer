@@ -5,7 +5,9 @@
   "main": "Server/server.js",
   "scripts": {
     "frontend": "nodemon ./Server/server.js",
-    "backend": "tsc && node ./Server/server.js"
+    "backend": "tsc && start \"\" \"http://localhost\" && node ./Server/server.js",
+    "compile": "tsc",
+    "start": "node ./Server/server.js"
   },
   "author": "",
   "license": "ISC",
@@ -13,6 +15,7 @@
     "bcrypt": "^5.0.0",
     "body-parser": "^1.19.0",
     "connect-flash": "^0.1.1",
+    "connect-mongo": "^4.4.1",
     "express": "^4.17.1",
     "express-ejs-layouts": "^2.5.0",
     "express-session": "^1.17.1",
