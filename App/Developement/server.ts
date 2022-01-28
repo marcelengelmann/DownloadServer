@@ -22,8 +22,8 @@ require("./config/passport")(passport);
 // allow public folder access
 app.use(express.static(path.join(__dirname, '/public')));
 
-app.use(bodyParser.json()); // for parsing application/json
-app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
+app.use(express.json());
+app.use(express.urlencoded({extended: true}));
 
 //mongoose
 mongoose.connect('mongodb://localhost/DownloadServer',{useNewUrlParser: true, useUnifiedTopology : true})
