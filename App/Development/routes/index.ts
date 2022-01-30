@@ -1,9 +1,9 @@
-import express from 'express';
+import express, { Router } from 'express';
 import fs from "fs";
-const router = express.Router();
+const router:Router = express.Router();
 
 router.get('/', (req, res) => {   
-    fs.readFile(__dirname + "/../Views/index.html", 'utf8', function (err, data) {
+    fs.readFile(__dirname + "/../../Views/index.html", 'utf8', function (err, data) {
         res.writeHead(200, {
             'Content-Type': 'text/html'
         });

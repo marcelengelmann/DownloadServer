@@ -1,15 +1,15 @@
 import express from 'express';
 import bcrypt from 'bcrypt';
 import passport from 'passport';
-import fs from "fs";
-import path from "path";
+
+import { UserModel } from "../models/userModel";
+
 const router = express.Router();
 
-const User = require("../models/user.js")
 
 router.get('/loginSuccess', (req, res) => {
     if (!req.isAuthenticated())
-        res.send("error");
+        res.sendStatus(401);
     else {
         const user = req.user as any;
         res.send({
@@ -20,7 +20,7 @@ router.get('/loginSuccess', (req, res) => {
 })
 
 router.get('/loginError', (req, res) => {
-    res.send("error");
+    res.sendStatus(401);
 })
 
 //Register handle
@@ -43,7 +43,7 @@ router.post('/register', async (req, res) => {
         errors.push("The passwords do not match!");
     
     //check user exists
-    const user = await User.findOne({ name: name }).exec();
+    const user = await UserModel.findOne({ name: name });
     
     if (user)
         errors.push("User already exists!");
@@ -56,19 +56,16 @@ router.post('/register', async (req, res) => {
         bcrypt.genSalt(10, (_, salt) =>
             bcrypt.hash(password, salt, (err, hashedPassword) => {
                 if (err) throw err;
-                const newUser = new User({
+                const newUser = new UserModel({
                     name: name,
                     password: hashedPassword,
                 });
                 newUser.save()
                     .then((value: any) => {
-                        console.log(value);
-                        fs.mkdirSync(path.join(__dirname, "../Files/", value.name));
-                        res.send("success")
+                        res.sendStatus(200);
                     })
                     .catch((value: any) => {
-                        console.log(value);
-                        res.send("error");
+                        res.sendStatus(500);
                     });
             }));
     }

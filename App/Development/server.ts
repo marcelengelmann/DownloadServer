@@ -1,32 +1,27 @@
 import express from 'express';
-const app = express();
-app.disable("x-powered-by");
 import path from "path";
 import mongoose from "mongoose";
-import bodyParser from 'body-parser';
 import session from 'express-session';
 import MongoStore from 'connect-mongo';
 import passport from 'passport';
-import { cleanFilesFolder } from "./services/cleanUP";
 
 //routers
-import { router as indexRouter } from './routes/index';
-import { router as publicFilesRouter } from './routes/publicFiles';
-import { router as userFilesRouter } from './routes/privateFiles';
-import { router as usersRouter } from './routes/users';
-import { router as adminRouter } from './routes/admin';
+import router from "./routes/config";
+
+const app = express();
+app.disable("x-powered-by");
 
 //passport config
 require("./config/passport")(passport);
 
 // allow public folder access
-app.use(express.static(path.join(__dirname, '/public')));
+app.use(express.static(path.join(__dirname, '/../public')));
 
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 
 //mongoose
-mongoose.connect('mongodb://localhost/DownloadServer',{useNewUrlParser: true, useUnifiedTopology : true})
+mongoose.connect('mongodb://localhost/DownloadServer')
     .then(() => console.log('connected to MongoDB'))
     .catch((err) => console.log(err));
     
@@ -43,14 +38,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 //routing
-app.use("/users", usersRouter);
-app.use("/files/public", publicFilesRouter);
-app.use("/files/private", userFilesRouter);
-app.use("/admin", adminRouter);
-app.use("/", indexRouter);
-
-//clean Files folder
-cleanFilesFolder();
+app.use(router);
 
 //start server
 const server: any = app.listen(80, function () {
@@ -58,9 +46,9 @@ const server: any = app.listen(80, function () {
     var networkInterfaces = os.networkInterfaces();
     var arr = networkInterfaces['Ethernet'];	
     var ip = arr[1].address;
-	for (let i = 0; i < arr.length; i++){
-		if(arr[i].family === 'IPv4'){
-			ip = arr[i].address;
+	for (let element of arr){
+		if(element.family === 'IPv4'){
+			ip = element.address;
 			break;
 		}
 	}

@@ -1,5 +1,6 @@
 let loggedIn = false;
 let uploadOnGoing = false;
+let currentUser = "Public";
 window.addEventListener("DOMContentLoaded", (event) => {
     //public upload eventlisteners
     $("#publicUploadButton").on("click", _ => {
@@ -48,9 +49,8 @@ window.addEventListener("DOMContentLoaded", (event) => {
 
     //try logging in (if session is still available)
     $.get(
-        `/users/loginSuccess`,
-        function (data) {
-            if (data !== "error") {
+        `/users/loginSuccess`, (data) => {
+            if (data) {
                 loginSuccess(data);
             }
         }
@@ -73,9 +73,10 @@ function getTableFiles(user) {
         console.error("wrong user!");
         return;
     }
+    let filesOfUser = user === "public" ? "Public" : currentUser;
     $.get(
-        `/files/${user}`,
-        function (files) {
+        `/files`,{username: filesOfUser},
+        (files) => {
             loadTableFiles(files, user === "public" ? "public" : "private");
         }
     );
@@ -91,10 +92,10 @@ function loadTableFiles(files, table) {
                 <td>${convertFileSize(file.size)}</td>
                 <td>
                     <div class="btn-group-lg">
-                        <button type="button" class="btn btn-default text-success" onclick="downloadFile(event, '${table}')">
+                        <button type="button" class="btn btn-default text-success" onclick="downloadFile('${file._id}')">
                             <span class="iconify icon-large" data-icon="mdi:download" data-inline="false"></span>
                         </button>
-                        <button type="button" class="btn btn-default text-danger" onclick="deleteFile(event, '${table}')">
+                        <button type="button" class="btn btn-default text-danger" onclick="deleteFile(event, '${file._id}')">
                             <span class="iconify icon-large" data-icon="mdi:delete" data-inline="false"></span>
                         </button>
                     </div>
@@ -112,23 +113,40 @@ function deleteTableFiles() {
 }
 
 //try to download the given file
-function downloadFile(event, table) {
-    const tableRow = $(event.target).closest("tr");
-    let filename = tableRow.find(`td:eq(0)`).text();
-    window.location.href = `/files/${table}/downloadFile?filename=${encodeURIComponent(filename)}`;
+function downloadFile(id) {
+    window.location.href = "/files/download?id=" + id;
 }
 
 
 //try to delete the given file
-function deleteFile(event, table) {
+function deleteFile(event, id) {
     const tableRow = $(event.target).closest("tr");
     let filename = tableRow.find(`td:eq(0)`).text();
     let answer = window.confirm(`Are you sure you want to delete the file ${filename}?`);
     if (answer) {
         $.ajax({
-            url: `/files/${table}/deleteFile?filename=${encodeURIComponent(filename)}`,
+            url: `/files/delete?fileId=${id}`,
             type: 'DELETE',
-            success: function (data) {
+            success: function () {
+                tableRow.fadeOut(700, () => {
+                    tableRow.remove();
+                });
+            }
+        });
+        
+    }
+}
+
+function deleteAllFiles(event) {
+    const table = event.data.table;    
+    const tableRow = $(event.target).closest("tr");
+    const user = table === "public" ? "Public" : currentUser;
+    let answer = window.confirm(`Are you sure you want to delete all files?`);
+    if (answer) {
+         $.ajax({
+            url: `/files/deleteAll?username=${user}`,
+            type: 'DELETE',
+            success: function () {
                 tableRow.fadeOut(700, () => {
                     tableRow.remove();
                 });
@@ -137,39 +155,21 @@ function deleteFile(event, table) {
     }
 }
 
-function deleteAllFiles(event) {
-    const table = event.data.table;
-    let answer = window.confirm(`Are you sure you want to delete all files?`);
-    if (answer) {
-        $.ajax({
-            url: `/files/${table}/deleteAllFiles`,
-            type: 'DELETE',
-            success: function (data) {
-                const tableBody = $(`#${table}FileTable tbody`);
-                tableBody.fadeOut(700, () => {
-                    tableBody.empty();
-                });
-            },
-            error: function (error) {
-                throw error;
-            }
-        });
-    }
-}
-
 //upload a file to either the public or your private directory
 function uploadFile(event) {
     const user = event.data.table;
+    const targetUser = user === "private" ? currentUser : "Public";
+    console.log(targetUser);
     const files = $(this).get(0).files;
     const formData = new FormData();
     if (files.length > 0) {
-        for (let i = 0; i < files.length; i++) {
-            let file = files[i];
+        for (let file of files) {
             formData.append("file", file, file.name);
+            formData.append("username", targetUser);
         }
         // upload file
         $.ajax({
-            url: `/files/${user}/uploadFile`,
+            url: `/files/upload`,
             type: 'POST',
             data: formData,
             processData: false,
@@ -240,7 +240,7 @@ function registerUser(e) {
     $.post(
         `/users/register`, registerFormData,
         function (data) {
-            if (data === 'success') {
+            if (data) {
                 $('#registerModal').modal('hide');
                 $("#registerSuccessful").css("display", "block");
                 $('#loginModal').modal('show');
@@ -276,19 +276,20 @@ function loginUser(e) {
 
 //login was successfull -> prepare for user usage
 function loginSuccess(data) {
-    if (data !== 'error') {
-        getTableFiles("private");
+    if (data) {
+        currentUser = data.name;
         loggedIn = true;
         $("#username").text(`Welcome ${data.name}`);
         $("#privateFiles").css("display", "block");
         if (data.role === "Admin")
-            $('#adminRedirectLink').css("display", "inline-block");
-
+        $('#adminRedirectLink').css("display", "inline-block");
+        
         $("#loginButton").html('Logout<span class="iconify icon-small" data-icon="mdi:logout" data-inline="false"></span>');
         $('#loginButton').on('click', logoutUser);
         $("#loginButton").removeAttr("data-toggle");
         $('#loginModal').modal('hide');
         $('#registerButton').css('display', "none");
+        getTableFiles("private");
 
     } else {
         $("#loginError").append("The name or password is incorrect");

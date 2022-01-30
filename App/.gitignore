@@ -103,9 +103,5 @@ dist
 # TernJS port file
 .tern-port
 
-Server/files/
-Server/config/
-Server/models/
-Server/routes/
-Server/services/
-Server/server.js
+Server/Backend/
+Server/Files

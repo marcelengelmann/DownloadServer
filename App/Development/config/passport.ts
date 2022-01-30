@@ -1,13 +1,14 @@
 const LocalStrategy = require('passport-local').Strategy;
 const bcrypt = require('bcrypt');
-const User = require("../models/user");
+import passport from "passport";
+import { UserModel } from "../models/userModel";
 
 module.exports = function (passport:any) {
     passport.use(
         new LocalStrategy(
             function (username: string, password: string, done: Function) {
-                User.findOne({ name: username })
-                    .then((user: typeof User) => {
+                UserModel.findOne({ name: username })
+                    .then((user) => {
                         if (!user)
                             return done(null, false, { message: 'The username or password is incorrect' });
                         bcrypt.compare(password, user.password, (err: Error, isMatch: boolean) => {                        
@@ -23,12 +24,12 @@ module.exports = function (passport:any) {
             }
         )
     );
-    passport.serializeUser(function(user:typeof User, done:Function) {
+    passport.serializeUser(function(user:any, done:Function) {
         done(null, user.id);
     });
       
     passport.deserializeUser(function(id:string, done:Function) {
-        User.findById(id, function(err:Error, user:typeof User) {
+        UserModel.findById(id, function(err:Error, user:any) {
             done(err, user);
         });
     }); 

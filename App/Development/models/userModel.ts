@@ -14,7 +14,14 @@ const nameValidator = [
     })
 ]
 
-const UserSchema = new mongoose.Schema({
+interface IUser {
+    name: string;
+    role: string;
+    password: string;
+    creationDate: Date;
+};
+
+const UserSchema = new mongoose.Schema<IUser>({
     name: {
         type: String,
         required: true,
@@ -29,12 +36,12 @@ const UserSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
-    date :{
+    creationDate :{
         type : Date,
         default : Date.now
     }
 });
 
-const User = mongoose.model('User', UserSchema);
+const UserModel = mongoose.model<IUser>('User', UserSchema);
 
-module.exports = User;
+export { UserModel, IUser };

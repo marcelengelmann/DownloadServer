@@ -3,9 +3,10 @@
         "module": "commonjs",
         "esModuleInterop": true,
         "allowSyntheticDefaultImports": true,
-        "moduleResolution": "node",
+        "moduleResolution": "node",        
+        "removeComments": true,
         "target": "es6",
-        "outDir": "./Server",
+        "outDir": "./Server/Backend",
         "strict": true,
         "sourceMap": false,
         "typeRoots": [
@@ -15,5 +16,6 @@
     "exclude": [
         "dist",
         "node_modules"
-    ]
+    ],
+    "include": ["Development/**/*.ts"]
 }

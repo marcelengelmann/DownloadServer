@@ -8,7 +8,7 @@ const { exec } = require('child_process');
 
 
 router.get("/", auth.ensureAdmin, (req, res) => {
-     fs.readFile(path.join(__dirname, "../Views/admin.html"), 'utf8', function (err, data) {
+     fs.readFile(path.join(__dirname, "../../Views/admin.html"), 'utf8', function (err, data) {
         res.writeHead(200, {
             'Content-Type': 'text/html'
         });
