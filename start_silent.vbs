@@ -3,4 +3,4 @@ Set fso = CreateObject("Scripting.FileSystemObject")
 currentPath = fso.GetAbsolutePathName(".")
 oShell.CurrentDirectory = currentPath
 
-oShell.Run "node ./App/Server/server.js", 0, True
+oShell.Run "node ./App/Server/Backend/server.js", 0, True

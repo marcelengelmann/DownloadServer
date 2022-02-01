@@ -159,7 +159,6 @@ function deleteAllFiles(event) {
 function uploadFile(event) {
     const user = event.data.table;
     const targetUser = user === "private" ? currentUser : "Public";
-    console.log(targetUser);
     const files = $(this).get(0).files;
     const formData = new FormData();
     if (files.length > 0) {

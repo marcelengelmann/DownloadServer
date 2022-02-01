@@ -89,14 +89,16 @@ router.post('/upload', auth.setCurrentUser, async (req: any, res) => {
     let files = Array<any>();
     // set file owner
     let targetUser = "";
+    // set file max file size to 10000 MB
+    const maxFileSize = 10000 * 1024 * 1024;
     // create an incoming form object
-    var form = new formidable.IncomingForm();
-    // specify that we want to allow the user to upload multiple files in a single request
-    form.multiples = true;
-    //keep the original file extension
-    form.keepExtensions = true;
-    // store all uploads in the /uploads directory
-    form.uploadDir = path.join(__dirname, "/../../Files");
+    var form = new formidable.IncomingForm({
+        multiples: true,
+        uploadDir: path.join(__dirname, "/../../Files"),
+        keepExtensions: true,
+        maxFileSize: maxFileSize,
+    });
+
     // every time a file has been uploaded successfully
     form.on('file', async (_, file) => {
         files.push(file);
@@ -108,11 +110,13 @@ router.post('/upload', auth.setCurrentUser, async (req: any, res) => {
         }
     })
     // log any errors that occur
-    form.on('error', function (err) {
-        console.log('An error has occured: \n' + err);
+    form.once('error', function (err) {
+        console.error(err);
+        res.sendStatus(400);
+        return;
     });
     // once all the files have been uploaded, send a response to the client
-    form.on('end', function () {
+    form.once('end', function () {
         const currentUser = req.user.name;
         if (targetUser === "Public" || currentUser === targetUser) {
             for (let file of files) {
@@ -132,7 +136,7 @@ router.post('/upload', auth.setCurrentUser, async (req: any, res) => {
         res.end();
     });
     // parse the incoming request containing the form data
-    form.parse(req);
+    form.parse(req, () => { });
 });
 
 export { router }
