@@ -1,6 +1,6 @@
 Dim oShell : Set oShell = CreateObject("WScript.Shell")
 Set fso = CreateObject("Scripting.FileSystemObject")
-currentPath = fso.GetAbsolutePathName(".")
+currentPath = fso.GetAbsolutePathName(CreateObject("Scripting.FileSystemObject").GetParentFolderName(WScript.ScriptFullName) & "\App")
 oShell.CurrentDirectory = currentPath
 
-oShell.Run "node ./App/Server/Backend/server.js", 0, True
+oShell.Run "npm run start", 0, False
