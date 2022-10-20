@@ -25,31 +25,31 @@ router.get('/loginError', (req, res) => {
 
 //Register handle
 router.post('/register', async (req, res) => {
-    
+
     const { name, password, passwordConfirm } = req.body;
     const errors: Array<string> = [];
-    
+
     //vallidation
     if (!name || !password || !passwordConfirm || name.length < 1 || password.length < 1 || passwordConfirm < 1)
         errors.push("Please fill in all fields!");
-    
+
     if (!name.match(/^[0-9a-zA-Z]+$/))
         errors.push("The name must not have any special characters!");
 
     if (name.length > 20)
         errors.push("Your name can not be longer than 20 characters!");
-    
+
     if (password !== passwordConfirm)
         errors.push("The passwords do not match!");
-    
+
     //check user exists
     const user = await UserModel.findOne({ name: name });
-    
+
     if (user)
         errors.push("User already exists!");
-    
+
     if (errors.length > 0) {
-        
+
         res.json(errors);
     }
     else {
@@ -72,10 +72,9 @@ router.post('/register', async (req, res) => {
 })
 router.post('/login', (req, res, next) => {
     if (req.body.rememberMe) {
-            req.session.cookie.maxAge = 30 * 24 * 60 * 60 * 1000; // Cookie expires after 30 days
-        }
+        req.session.cookie.maxAge = 30 * 24 * 60 * 60 * 1000; // Cookie expires after 30 days
+    }
     passport.authenticate('local', {
-        successRedirect: '/users/loginSuccess',
         failureRedirect: '/users/loginError',
     })(req, res, next);
 });
@@ -85,5 +84,5 @@ router.get('/logout', (req, res) => {
     req.logout();
     res.redirect("/");
 })
- 
+
 export { router }

@@ -1,12 +1,12 @@
 {
     "compilerOptions": {
-        "module": "commonjs",
+        "module": "CommonJS",
         "esModuleInterop": true,
         "allowSyntheticDefaultImports": true,
-        "moduleResolution": "node",        
+        "moduleResolution": "node",
         "removeComments": true,
         "target": "es6",
-        "outDir": "./Server/Backend",
+        "outDir": "./Server/backend",
         "strict": true,
         "sourceMap": false,
         "typeRoots": [
@@ -17,5 +17,7 @@
         "dist",
         "node_modules"
     ],
-    "include": ["Development/**/*.ts"]
+    "include": [
+        "Development/**/*.ts"
+    ]
 }

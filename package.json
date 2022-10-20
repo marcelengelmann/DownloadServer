@@ -4,8 +4,10 @@
   "description": "",
   "main": "Server/server.js",
   "scripts": {
-    "dev": "tsc-watch --onSuccess \"node ./Server/backend/server.js\"",
-    "start": "start /b cmd /c mongod --config \"C:\\Program Files\\MongoDB\\Server\\5.0\\bin\\mongod.cfg\" & node ./Server/backend/server.js && taskkill /f /im mongod.exe"
+    "dev": "start /b cmd /c mongod & tsc-watch --onSuccess \"node ./Server/backend/server.js\"",
+    "start": "start /b cmd /c mongod & node ./Server/backend/server.js && taskkill /f /im mongod.exe",
+    "cli": "tsc && node ./Server/backend/cli.js",
+    "cli-test": "tsc && node ./Server/backend/cli.js --user=private --files=\"C:\\Users\\DeathTruction\\Downloads\\Stundenplan.xlsx\""
   },
   "author": "",
   "license": "ISC",
@@ -14,6 +16,7 @@
     "body-parser": "^1.19.0",
     "connect-flash": "^0.1.1",
     "connect-mongo": "^4.6.0",
+    "dotenv": "^16.0.3",
     "express": "^4.17.1",
     "express-ejs-layouts": "^2.5.0",
     "express-session": "^1.17.1",
@@ -23,7 +26,8 @@
     "nodemon": "^2.0.6",
     "passport": "^0.4.1",
     "passport-local": "^1.0.0",
-    "websocket": "^1.0.33"
+    "websocket": "^1.0.33",
+    "yargs": "^17.6.0"
   },
   "devDependencies": {
     "@types/bcrypt": "^3.0.0",
@@ -31,7 +35,9 @@
     "@types/express-session": "^1.17.3",
     "@types/formidable": "^2.0.1",
     "@types/passport": "^1.0.4",
+    "@types/ps-node": "^0.1.1",
     "@types/ws": "^7.4.0",
+    "@types/yargs": "^17.0.13",
     "jshint": "^2.13.4",
     "tsc-watch": "^4.6.0",
     "tslint": "^6.1.3",

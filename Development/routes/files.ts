@@ -12,7 +12,7 @@ router.get('/', auth.setCurrentUser, async (req: any, res) => {
     const currentUser = req.user.name;
     const requestedFilesOfUser = req.query.username;
     if (requestedFilesOfUser === "Public" || currentUser === requestedFilesOfUser) {
-        
+
         let files: IFile[] = await FileModel.find().byUser(requestedFilesOfUser).select("_id name size uploadDate");
         res.json(files);
         return;
@@ -21,7 +21,7 @@ router.get('/', auth.setCurrentUser, async (req: any, res) => {
 });
 
 router.get('/download', auth.setCurrentUser, async (req: any, res) => {
-    
+
     const username: string = req.user.name;
     const fileId: string = req.query.id;
 
@@ -30,7 +30,7 @@ router.get('/download', auth.setCurrentUser, async (req: any, res) => {
         return;
     }
 
-    let file: IFile = await FileModel.findOne().byId(fileId).where({ owner: { $in: [username, "Public"] }});
+    let file: IFile = await FileModel.findOne().byId(fileId).where({ owner: { $in: [username, "Public"] } });
     if (file && fs.existsSync(file.fileLocation)) {
         res.download(file.fileLocation, file.name, (err) => {
             if (err) {
@@ -59,7 +59,7 @@ router.delete('/delete', auth.setCurrentUser, async (req: any, res) => {
         return;
     }
     util.deleteFile(result.fileLocation);
-    res.sendStatus(200);    
+    res.sendStatus(200);
 });
 
 router.delete('/deleteAll', auth.setCurrentUser, async (req: any, res) => {
@@ -132,8 +132,11 @@ router.post('/upload', auth.setCurrentUser, async (req: any, res) => {
                         res.sendStatus(400);
                     });
             }
+            res.end();
         }
-        res.end();
+        else {
+            res.sendStatus(400);
+        }
     });
     // parse the incoming request containing the form data
     form.parse(req, () => { });
