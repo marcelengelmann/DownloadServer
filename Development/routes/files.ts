@@ -76,7 +76,7 @@ router.delete('/deleteAll', auth.setCurrentUser, async (req: any, res) => {
             return file.fileLocation;
         });
         util.deleteMultipleFiles(filePaths);
-        await FileModel.deleteMany().byUser(requestedFilesOfUser);
+        const resu = await FileModel.deleteMany({ owner: requestedFilesOfUser });
         res.sendStatus(200);
         return;
     }

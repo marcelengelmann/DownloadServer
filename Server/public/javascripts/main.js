@@ -75,7 +75,7 @@ function getTableFiles(user) {
     }
     let filesOfUser = user === "public" ? "Public" : currentUser;
     $.get(
-        `/files`,{username: filesOfUser},
+        `/files`, { username: filesOfUser },
         (files) => {
             loadTableFiles(files, user === "public" ? "public" : "private");
         }
@@ -133,22 +133,21 @@ function deleteFile(event, id) {
                 });
             }
         });
-        
+
     }
 }
 
 function deleteAllFiles(event) {
-    const table = event.data.table;    
-    const tableRow = $(event.target).closest("tr");
+    const table = event.data.table;
     const user = table === "public" ? "Public" : currentUser;
     let answer = window.confirm(`Are you sure you want to delete all files?`);
     if (answer) {
-         $.ajax({
+        $.ajax({
             url: `/files/deleteAll?username=${user}`,
             type: 'DELETE',
             success: function () {
-                tableRow.fadeOut(700, () => {
-                    tableRow.remove();
+                $("tbody > tr").fadeOut(700, () => {
+                    $("tbody > tr").remove();
                 });
             }
         });
@@ -281,8 +280,8 @@ function loginSuccess(data) {
         $("#username").text(`Welcome ${data.name}`);
         $("#privateFiles").css("display", "block");
         if (data.role === "Admin")
-        $('#adminRedirectLink').css("display", "inline-block");
-        
+            $('#adminRedirectLink').css("display", "inline-block");
+
         $("#loginButton").html('Logout<span class="iconify icon-small" data-icon="mdi:logout" data-inline="false"></span>');
         $('#loginButton').on('click', logoutUser);
         $("#loginButton").removeAttr("data-toggle");
