@@ -12,7 +12,7 @@ if "%~1"=="" (
 )
 
 :loop
-set files=%files% "%1"
+set files=%files% %1
 shift
 if not "%~1"=="" goto loop
 
