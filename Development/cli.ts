@@ -121,13 +121,14 @@ async function main() {
         } catch (err) {
 
         }
-        if (validFiles == numFiles) {
-            await exit(0);
-        }
-        else {
-            // add 3 to get an exit code of at least 4
-            await exit(numFiles - validFiles + 3);
-        }
+    }
+    if (validFiles == numFiles) {
+        await exit(0);
+    }
+
+    else {
+        // add 3 to get an exit code of at least 4
+        await exit(numFiles - validFiles + 3);
     }
 
 }
