@@ -5,7 +5,7 @@
   "main": "Server/server.js",
   "scripts": {
     "dev": "start /b cmd /c mongod & tsc-watch --onSuccess \"node ./Server/backend/server.js\"",
-    "start": "start /b cmd /c mongod & pm2 start ./Server/backend/server.js --watch"
+    "start": "start /b cmd /c mongod & node ./Server/backend/server.js && taskkill /f /im mongod.exe"
   },
   "author": "",
   "license": "ISC",
