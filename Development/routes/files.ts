@@ -53,7 +53,6 @@ router.delete('/delete', auth.setCurrentUser, async (req: any, res) => {
     }
 
     let result = await FileModel.findOneAndDelete({ _id: fileId }).where({ owner: { $in: [username, "Public"] } });
-    console.log(result);
     if (result == null) {
         res.sendStatus(404);
         return;

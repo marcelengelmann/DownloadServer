@@ -75,6 +75,7 @@ router.post('/login', (req, res, next) => {
         req.session.cookie.maxAge = 30 * 24 * 60 * 60 * 1000; // Cookie expires after 30 days
     }
     passport.authenticate('local', {
+        successRedirect: '/users/loginSuccess',
         failureRedirect: '/users/loginError',
     })(req, res, next);
 });
