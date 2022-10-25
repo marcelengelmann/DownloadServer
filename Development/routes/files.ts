@@ -1,6 +1,7 @@
 import express from 'express';
 import fs from "fs";
 import path from "path";
+import mongoose from "mongoose"
 import formidable from "formidable";
 import { auth } from "../config/auth";
 import util from '../utils/util';
@@ -45,7 +46,7 @@ router.get('/download', auth.setCurrentUser, async (req: any, res) => {
 });
 
 router.delete('/delete', auth.setCurrentUser, async (req: any, res) => {
-    const fileId = req.query.fileId;
+    const fileId = new mongoose.Types.ObjectId(req.query.fileId.trim());
     const username = req.user.name;
     if (!fileId) {
         res.sendStatus(404);
@@ -102,6 +103,14 @@ router.post('/upload', auth.setCurrentUser, async (req: any, res) => {
     form.on('file', async (_, file) => {
         files.push(file);
     });
+
+    form.on('fileBegin', (field, value) => {
+        const currentUser = req.user.name;
+        if (targetUser !== "Public" && currentUser !== targetUser) {
+            throw new formidable.errors.FormidableError("unautherized", 0, 401);
+        }
+
+    })
 
     form.on('field', (field, value) => {
         if (field === "username") {
