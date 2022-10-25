@@ -10,7 +10,7 @@ import crypto from "crypto";
 import { FileModel } from "./models/fileModel";
 import { UserModel } from "./models/userModel";
 
-require('dotenv').config({ path: __dirname + "/../../.env" });
+require('dotenv').config({ path: path.join(__dirname, `/../../${process.env.NODE_ENV || "development"}.env`) });
 
 const execPromise = util.promisify(exec);
 const bcryptComparePromise = util.promisify(bcrypt.compare);
@@ -66,7 +66,7 @@ async function main() {
 
     //mongoose
     try {
-        mongoose.connect('mongodb://localhost/DownloadServer');
+        mongoose.connect(process.env.DATABASE_CONNECTION_URI || "");
     }
     catch (err) {
         await exit(2); //TODO: exit code
@@ -82,8 +82,8 @@ async function main() {
 
     const argv: any = yargs.argv;
 
-    const username = argv.user == "public" ? "Public" : process.env.USER;
-    const password = username == "Public" ? "" : process.env.PASSWORD;
+    const username = argv.user == "public" ? "Public" : process.env.CLI_USER;
+    const password = username == "Public" ? "" : process.env.CLI_PASSWORD;
 
     if (username !== "Public") {
         if (username && password) {

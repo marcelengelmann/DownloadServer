@@ -4,6 +4,10 @@ import mongoose from "mongoose";
 import session from 'express-session';
 import MongoStore from 'connect-mongo';
 import passport from 'passport';
+import { ioConfig } from "./socket/config";
+
+
+require('dotenv').config({ path: path.join(__dirname, `/../../${process.env.NODE_ENV || "development"}.env`) });
 
 //routers
 import router from "./routes/config";
@@ -18,20 +22,22 @@ require("./config/passport")(passport);
 app.use(express.static(path.join(__dirname, '/../public')));
 
 app.use(express.json());
-app.use(express.urlencoded({extended: true}));
+app.use(express.urlencoded({ extended: true }));
+
 
 //mongoose
-mongoose.connect('mongodb://localhost/DownloadServer')
+mongoose.connect(process.env.DATABASE_CONNECTION_URI || "")
     .then(() => console.log('connected to MongoDB'))
     .catch((err) => console.log(err));
-    
+
 //express session
-app.use(session({
+const expressSession = session({
     secret: 'kdljse938o4wwWEE§"$7z6RGG%&$$rgdfASD@][{',
-    resave : true,
+    resave: true,
     saveUninitialized: true,
-    store: MongoStore.create({ mongoUrl: 'mongodb://localhost/DownloadServer' })
-}));
+    store: MongoStore.create({ mongoUrl: process.env.DATABASE_CONNECTION_URI })
+})
+app.use(expressSession);
 
 //passport 
 app.use(passport.initialize());
@@ -41,16 +47,18 @@ app.use(passport.session());
 app.use(router);
 
 //start server
-const server: any = app.listen(80, function () {
+const server: any = app.listen(process.env.SERVER_PORT, function () {
     var os = require('os');
     var networkInterfaces = os.networkInterfaces();
-    var arr = networkInterfaces['Ethernet'];	
+    var arr = networkInterfaces['Ethernet'];
     var ip = arr[1].address;
-	for (let element of arr){
-		if(element.family === 'IPv4'){
-			ip = element.address;
-			break;
-		}
-	}
+    for (let element of arr) {
+        if (element.family === 'IPv4') {
+            ip = element.address;
+            break;
+        }
+    }
     console.log(`Listening at http://${ip}:${server.address().port}`);
 });
+
+ioConfig.setSocketConnection(server, [expressSession, passport.initialize(), passport.session()]);
