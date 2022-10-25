@@ -1,9 +1,8 @@
 const LocalStrategy = require('passport-local').Strategy;
 const bcrypt = require('bcrypt');
-import passport from "passport";
 import { UserModel } from "../models/userModel";
 
-module.exports = function (passport:any) {
+module.exports = function (passport: any) {
     passport.use(
         new LocalStrategy(
             function (username: string, password: string, done: Function) {
@@ -11,8 +10,8 @@ module.exports = function (passport:any) {
                     .then((user) => {
                         if (!user)
                             return done(null, false, { message: 'The username or password is incorrect' });
-                        bcrypt.compare(password, user.password, (err: Error, isMatch: boolean) => {                        
-                            
+                        bcrypt.compare(password, user.password, (err: Error, isMatch: boolean) => {
+
                             if (err) throw err;
                             if (isMatch)
                                 return done(null, user);
@@ -24,13 +23,13 @@ module.exports = function (passport:any) {
             }
         )
     );
-    passport.serializeUser(function(user:any, done:Function) {
+    passport.serializeUser(function (user: any, done: Function) {
         done(null, user.id);
     });
-      
-    passport.deserializeUser(function(id:string, done:Function) {
-        UserModel.findById(id, function(err:Error, user:any) {
+
+    passport.deserializeUser(function (id: string, done: Function) {
+        UserModel.findById(id, function (err: Error, user: any) {
             done(err, user);
         });
-    }); 
+    });
 }

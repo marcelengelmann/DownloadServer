@@ -20,9 +20,7 @@ router.get("/shutdownServer", auth.ensureAdmin, (req: any, res) => {
     res.status(200)
     res.end()
     const server = req.connection.server
-    console.log('closing server')
     server.close(() => {
-        console.log('Server closed.')
         process.exit(0)
     });
 });
@@ -31,10 +29,7 @@ router.get("/shutdownComputer", auth.ensureAdmin, (req: any, res) => {
     res.status(200)
     res.end()
     const server = req.connection.server
-    console.log("closing server.")
     server.close(() => {
-        console.log('Server closed.')
-        console.log("shutting down computer");
         exec('cmd /c shutdown -a & shutdown -s -f -t 0', (err: any, stdout: any, stderr: any) => {
             if (err) {
                 console.log(err);
