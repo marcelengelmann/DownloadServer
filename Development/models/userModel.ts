@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import { model, Schema } from "mongoose";
 const validate = require('mongoose-validator');
 
 const nameValidator = [
@@ -10,7 +10,7 @@ const nameValidator = [
     validate({
         validator: 'isAlphanumeric',
         passIfEmpty: true,
-        message: 'Name should contain alpha-numeric characters only',        
+        message: 'Name should contain alpha-numeric characters only',
     })
 ]
 
@@ -21,7 +21,7 @@ interface IUser {
     creationDate: Date;
 };
 
-const UserSchema = new mongoose.Schema<IUser>({
+const UserSchema = new Schema<IUser>({
     name: {
         type: String,
         required: true,
@@ -36,12 +36,12 @@ const UserSchema = new mongoose.Schema<IUser>({
         type: String,
         required: true,
     },
-    creationDate :{
-        type : Date,
-        default : Date.now
+    creationDate: {
+        type: Date,
+        default: Date.now
     }
 });
 
-const UserModel = mongoose.model<IUser>('User', UserSchema);
+const UserModel = model<IUser>('User', UserSchema);
 
 export { UserModel, IUser };

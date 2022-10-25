@@ -6,6 +6,7 @@ import formidable from "formidable";
 import { auth } from "../config/auth";
 import util from '../utils/util';
 import { FileModel, IFile } from "../models/fileModel";
+import { ioConfig } from '../socket/config';
 
 const router = express.Router();
 
@@ -46,7 +47,14 @@ router.get('/download', auth.setCurrentUser, async (req: any, res) => {
 });
 
 router.delete('/delete', auth.setCurrentUser, async (req: any, res) => {
-    const fileId = new mongoose.Types.ObjectId(req.query.fileId.trim());
+    let fileId;
+    try {
+        fileId = new mongoose.Types.ObjectId(req.query.fileId.trim());
+    }
+    catch (error) {
+        res.sendStatus(400);
+        return;
+    }
     const username = req.user.name;
     if (!fileId) {
         res.sendStatus(404);
@@ -59,6 +67,7 @@ router.delete('/delete', auth.setCurrentUser, async (req: any, res) => {
         return;
     }
     util.deleteFile(result.fileLocation);
+    ioConfig.sendMessage("deleteFile", username, fileId)
     res.sendStatus(200);
 });
 
@@ -76,7 +85,8 @@ router.delete('/deleteAll', auth.setCurrentUser, async (req: any, res) => {
             return file.fileLocation;
         });
         util.deleteMultipleFiles(filePaths);
-        const resu = await FileModel.deleteMany({ owner: requestedFilesOfUser });
+        await FileModel.deleteMany({ owner: requestedFilesOfUser });
+        ioConfig.sendMessage("deleteAll", requestedFilesOfUser, requestedFilesOfUser === "Public" ? "public" : "private");
         res.sendStatus(200);
         return;
     }
@@ -139,6 +149,7 @@ router.post('/upload', auth.setCurrentUser, async (req: any, res) => {
                         console.error(err);
                         res.sendStatus(400);
                     });
+                ioConfig.sendMessage("newFile", targetUser, { "_id": newFile.id, "name": newFile.name, "size": newFile.size, "uploadDate": newFile.uploadDate, "table": targetUser == "Public" ? "public" : "private" });
             }
             res.end();
         }

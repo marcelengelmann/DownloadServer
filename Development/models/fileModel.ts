@@ -1,5 +1,4 @@
 import { model, Model, Schema, Document, Query } from "mongoose";
-import mongoose from 'mongoose';
 
 interface IFile {
     name: string;

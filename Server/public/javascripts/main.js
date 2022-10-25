@@ -1,7 +1,11 @@
 let loggedIn = false;
 let uploadOnGoing = false;
 let currentUser = "Public";
+const socket = io();
 window.addEventListener("DOMContentLoaded", (event) => {
+
+    setupIOSocket();
+
     //public upload eventlisteners
     $("#publicUploadButton").on("click", _ => {
         $("#publicUploadInput").click();
@@ -87,7 +91,7 @@ function loadTableFiles(files, table) {
     let tbody = $(`#${table}FileTable > tbody`);
     [...files].forEach((file) => {
         tbody.append(`
-            <tr>
+            <tr fileid=${file._id}>
                 <td>${file.name}</td>
                 <td>${convertFileSize(file.size)}</td>
                 <td>
@@ -105,12 +109,6 @@ function loadTableFiles(files, table) {
     });
 }
 
-//remove all files from the tables
-function deleteTableFiles() {
-    $(`#publicFileTable > tbody`).empty();
-    if (loggedIn)
-        $(`#privateFileTable > tbody`).empty();
-}
 
 //try to download the given file
 function downloadFile(id) {
@@ -119,19 +117,14 @@ function downloadFile(id) {
 
 
 //try to delete the given file
-function deleteFile(event, id) {
-    const tableRow = $(event.target).closest("tr");
+function deleteFile(_, id) {
+    const tableRow = $(`[fileid='${id}']`);
     let filename = tableRow.find(`td:eq(0)`).text();
     let answer = window.confirm(`Are you sure you want to delete the file ${filename}?`);
     if (answer) {
         $.ajax({
             url: `/files/delete?fileId=${id}`,
             type: 'DELETE',
-            success: function () {
-                tableRow.fadeOut(700, () => {
-                    tableRow.remove();
-                });
-            }
         });
 
     }
@@ -144,12 +137,7 @@ function deleteAllFiles(event) {
     if (answer) {
         $.ajax({
             url: `/files/deleteAll?username=${user}`,
-            type: 'DELETE',
-            success: function () {
-                $("tbody > tr").fadeOut(700, () => {
-                    $("tbody > tr").remove();
-                });
-            }
+            type: 'DELETE'
         });
     }
 }
@@ -162,8 +150,8 @@ function uploadFile(event) {
     const formData = new FormData();
     if (files.length > 0) {
         for (let file of files) {
-            formData.append("file", file, file.name);
             formData.append("username", targetUser);
+            formData.append("file", file, file.name);
         }
         // upload file
         $.ajax({
@@ -173,7 +161,6 @@ function uploadFile(event) {
             processData: false,
             contentType: false,
             success: () => {
-                loadTableFiles(files, user);
                 uploadCompleted();
             },
             //get progress on the current upload
@@ -328,4 +315,21 @@ function calculateCurrentFile(files, loaded) {
             return file.name;
     }
     return "--";
+}
+
+function setupIOSocket() {
+    socket.on("newFile", file => {
+        loadTableFiles([file], file.table);
+    });
+    socket.on("deleteFile", fileId => {
+        const tableRow = $(`[fileid='${fileId}']`).fadeOut(700, () => {
+            tableRow.remove();
+        });
+    });
+    socket.on("deleteAll", table => {
+        $(`#${table}FileTable > tbody`).fadeOut(700, () => {
+            $("tbody > tr").remove();
+        });
+    });
+
 }
