@@ -72,7 +72,7 @@ router.post('/register', async (req, res) => {
 })
 router.post('/login', (req, res, next) => {
     if (req.body.rememberMe) {
-        req.session.cookie.maxAge = 30 * 24 * 60 * 60 * 1000; // Cookie expires after 30 days
+        req.session.cookie.maxAge = 365 * 24 * 60 * 60 * 1000; // Cookie expires after 365 days
     }
     passport.authenticate('local', {
         successRedirect: '/users/loginSuccess',
