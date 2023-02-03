@@ -328,7 +328,7 @@ function setupIOSocket() {
     });
     socket.on("deleteAll", table => {
         $(`#${table}FileTable > tbody`).fadeOut(700, () => {
-            $("tbody > tr").remove();
+            $(`#${table}FileTable > tbody > tr`).remove();
         });
     });
 
