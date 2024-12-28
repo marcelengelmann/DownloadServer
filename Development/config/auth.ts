@@ -1,27 +1,23 @@
-import {UserModel} from "../models/userModel";
-const auth = {
-    setCurrentUser: async (req:any, res:any, next:any) => {
-        if (req.isAuthenticated()) {
-            next();
-        }
-        else{
-            req.user = {};
-            req.user.name = "Public";
-            next();
-        }
-    },
-    ensureAdmin: async (req: any, res: any, next: any) => {
-        if (req.isAuthenticated()) {
-            const user = await UserModel.findOne({ name: req.user.name });
-            if (user?.role === "Admin") {
-                next();
-            }
-            else
-                res.redirect("/");
-        }
-        else
-            res.redirect("/");
-        }
-}
+import { UserService } from "../users/userService";
 
-export{auth}
+const auth = {
+	setCurrentUser: (req: any, res: any, next: any) => {
+		if (req.isAuthenticated()) {
+			next();
+		} else {
+			req.user = {};
+			req.user.username = "Public";
+			next();
+		}
+	},
+	ensureAdmin: (req: any, res: any, next: any) => {
+		if (req.isAuthenticated()) {
+			const user = UserService.getUserByName(req.user.username);
+			if (user?.role === "Admin") {
+				next();
+			} else res.redirect("/");
+		} else res.redirect("/");
+	},
+};
+
+export { auth };

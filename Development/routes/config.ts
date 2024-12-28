@@ -1,10 +1,10 @@
 import express, { Router } from "express";
 const router: Router = express.Router();
 
-import { router as indexRouter } from './index';
-import { router as files } from './files';
-import { router as usersRouter } from './users';
-import { router as adminRouter } from './admin';
+import { router as files } from "../files/fileRoutes";
+import { router as usersRouter } from "../users/userRoutes";
+import { router as adminRouter } from "./admin";
+import { router as indexRouter } from "./index";
 
 router.use("/users", usersRouter);
 router.use("/files", files);

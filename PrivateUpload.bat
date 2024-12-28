@@ -1,7 +1,6 @@
 @echo off
 
 cd %~dp0
-cd Server\backend
 
 set files=
 
@@ -20,7 +19,7 @@ set files=%files:~1%
 
 echo node cli.js --user=private --files=%files%
 
-node cli.js --user=private --files=%files%
+node Server\backend\cli.js --user=private --files=%files%
 
 IF %ERRORLEVEL% == 1 ( 
    echo "Authentication failed"
