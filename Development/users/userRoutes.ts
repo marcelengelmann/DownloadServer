@@ -1,7 +1,7 @@
 import bcrypt from "bcrypt";
 import express from "express";
 import passport from "passport";
-import { UserRole } from "./user";
+import { User, UserResponse, UserRole } from "./user";
 import { UserService } from "./userService";
 /*
 https://www.google.com/search?q=nodejs+express+sqlite&hl=en&uact=5
@@ -18,10 +18,12 @@ const router = express.Router();
 router.get("/loginSuccess", (req, res) => {
 	if (!req.isAuthenticated()) res.sendStatus(401);
 	else {
-		const user = req.user as any;
-		res.send({
+		const user = req.user as unknown as User;
+		const userResponse: UserResponse = {
 			username: user.username,
-		});
+			role: user.role,
+		};
+		res.send(userResponse);
 	}
 });
 

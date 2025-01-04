@@ -20,6 +20,5 @@ export interface CreateUserRequest {
 
 export interface UserResponse {
 	username: string;
-	password: string;
 	role: UserRole;
 }
