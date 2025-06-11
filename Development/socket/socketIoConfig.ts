@@ -1,6 +1,13 @@
 import { Server } from "socket.io";
 import { FileResponse } from "../files/file";
-type messageEvents = "newFile" | "deleteFile" | "deleteAll";
+import { UserMessageResponse } from "../messages/message";
+type messageEvents =
+	| "newFile"
+	| "deleteFile"
+	| "deleteAllFiles"
+	| "newMessage"
+	| "deleteMessage"
+	| "deleteAllMessages";
 
 class SocketIo {
 	private io!: Server;
@@ -36,11 +43,30 @@ class SocketIo {
 		socketIo.sendMessage("deleteFile", targetUser, fileId);
 	}
 
-	public sendDeleteAll(requestedFilesOfUser: string) {
+	public sendDeleteAllFiles(requestedFilesOfUser: string) {
 		socketIo.sendMessage(
-			"deleteAll",
+			"deleteAllFiles",
 			requestedFilesOfUser,
 			requestedFilesOfUser === "Public" ? "public" : "private"
+		);
+	}
+
+	public sendNewMessage(newMessage: UserMessageResponse, targetUser: string) {
+		socketIo.sendMessage("newMessage", targetUser, {
+			...newMessage,
+			table: targetUser == "Public" ? "public" : "private",
+		});
+	}
+
+	public sendDeleteMessage(messageId: number, targetUser: string) {
+		socketIo.sendMessage("deleteMessage", targetUser, messageId);
+	}
+
+	public sendDeleteAllMessages(requestedMessagesOfUser: string) {
+		socketIo.sendMessage(
+			"deleteAllMessages",
+			requestedMessagesOfUser,
+			requestedMessagesOfUser === "Public" ? "public" : "private"
 		);
 	}
 

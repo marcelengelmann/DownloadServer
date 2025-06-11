@@ -89,7 +89,7 @@ router.delete("/deleteAll", auth.setCurrentUser, async (req: any, res) => {
 			return file.fileLocation;
 		});
 		util.deleteMultipleFiles(filePaths);
-		socketIo.sendDeleteAll(requestedFilesOfUser);
+		socketIo.sendDeleteAllFiles(requestedFilesOfUser);
 		res.sendStatus(200);
 		return;
 	}
@@ -122,7 +122,7 @@ router.post("/upload", auth.setCurrentUser, async (req: any, res) => {
 	form.on("fileBegin", (field, value) => {
 		const currentUser = req.user.username;
 		if (targetUser !== "Public" && currentUser !== targetUser) {
-			throw new formidable.errors.FormidableError("unautherized", 0, 401);
+			throw new formidable.errors.FormidableError("unauthorized", 0, 401);
 		}
 	});
 

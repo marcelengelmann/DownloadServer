@@ -20,7 +20,7 @@ const SqlStatements = {
 	selectAndDeleteFileByIdAndOwner: db.prepare(
 		"DELETE FROM files WHERE id = @id AND owner IN ('Public', @owner) returning *"
 	),
-	selectAndDeleteFilesByUsername: db.prepare(
+	selectAndDeleteFilesByOwner: db.prepare(
 		"DELETE FROM files WHERE owner = @owner returning *"
 	),
 	createFile: db.prepare(
@@ -79,7 +79,7 @@ class FileService {
 
 	public deleteFilesByUser(username: string): UserFile[] | undefined {
 		try {
-			return SqlStatements.selectAndDeleteFilesByUsername.all({
+			return SqlStatements.selectAndDeleteFilesByOwner.all({
 				owner: username,
 			}) as UserFile[] | undefined;
 		} catch (err) {

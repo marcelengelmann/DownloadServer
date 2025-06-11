@@ -2,7 +2,7 @@ let loggedIn = false;
 let uploadOnGoing = false;
 let currentUser = "Public";
 const socket = io();
-window.addEventListener("DOMContentLoaded", (event) => {
+window.addEventListener("DOMContentLoaded", () => {
 	setupIOSocket();
 
 	//public upload eventlisteners
@@ -35,6 +35,15 @@ window.addEventListener("DOMContentLoaded", (event) => {
 		},
 		deleteAllFiles
 	);
+
+	$("#publicNewMessageButton").on(
+		"click",
+		{
+			table: "public",
+		},
+		createUserMessage
+	);
+
 	$("#privateDeleteAll").on(
 		"click",
 		{
@@ -63,6 +72,7 @@ window.addEventListener("DOMContentLoaded", (event) => {
 	});
 	//get public files
 	getTableFiles("public");
+	getUserMessages("public");
 
 	//try logging in (if session is still available)
 	$.get(`/users/loginSuccess`, (data) => {
@@ -233,6 +243,84 @@ function uploadCompleted() {
 	setTimeout(() => $(`#uploadContainer`).fadeToggle(1000), 4000);
 }
 
+/* 
+	Handling Messages
+*/
+
+function getUserMessages(user) {
+	if (!user) {
+		getUserMessages("public");
+		if (loggedIn) getUserMessages("private");
+		return;
+	}
+	if (user !== "public" && user !== "private") {
+		console.error("wrong user!");
+		return;
+	}
+	let messagesOfUser = user === "public" ? "Public" : currentUser;
+	$.get(`/messages`, { username: messagesOfUser }, (files) => {
+		loadUserMessages(files, user === "public" ? "public" : "private");
+	});
+}
+
+//display the given messages
+function loadUserMessages(messages, table) {
+	let tbody = $(`#${table}MessageTable > tbody`);
+	[...messages].forEach((message) => {
+		tbody.append(`
+            <tr messageid=${message.id}>
+                <td>${message.message}</td>
+                <td>
+                    <div class="btn-group-lg">
+                        <button type="button" class="btn btn-default text-danger" onclick="deleteMessage(event, '${message.id}')">
+                            <span class="iconify icon-large" data-icon="mdi:delete" data-inline="false"></span>
+                        </button>
+                    </div>
+                </td>
+            </tr>
+        `);
+	});
+}
+
+//try to delete the given file
+function deleteMessage(_, id) {
+	let answer = window.confirm(`Are you sure you want to delete the message?`);
+	if (answer) {
+		$.ajax({
+			url: `/messages/delete?messageId=${id}`,
+			type: "DELETE",
+		});
+	}
+}
+
+function deleteAllMessages(event) {
+	const table = event.data.table;
+	const user = table === "public" ? "Public" : currentUser;
+	let answer = window.confirm(`Are you sure you want to delete all messages?`);
+	if (answer) {
+		$.ajax({
+			url: `/messages/deleteAll?username=${user}`,
+			type: "DELETE",
+		});
+	}
+}
+
+function createUserMessage(event) {
+	const user = event.data.table;
+	const targetUser = user === "private" ? currentUser : "Public";
+	const textArea = document.getElementById("publicNewMessageText");
+	$.ajax({
+		url: `/messages/create`,
+		type: "POST",
+		data: {
+			username: targetUser,
+			message: textArea.value,
+		},
+	});
+
+	textArea.value = "";
+}
+
 /*
     Handling Authentication
 */
@@ -289,6 +377,7 @@ function loginSuccess(data) {
 		$("#loginModal").modal("hide");
 		$("#registerButton").css("display", "none");
 		getTableFiles("private");
+		getUserMessages("private");
 	} else {
 		$("#loginError").append("The name or password is incorrect");
 	}
@@ -336,7 +425,7 @@ function setupIOSocket() {
 			tableRow.remove();
 		});
 	});
-	socket.on("deleteAll", (table) => {
+	socket.on("deleteAllFiles", (table) => {
 		const tableRows = $(`#${table}FileTable > tbody > tr`);
 		tableRows.fadeOut(700, () => {
 			$(`#${table}FileTable > tbody > tr`).remove();

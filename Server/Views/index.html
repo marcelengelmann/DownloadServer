@@ -118,73 +118,113 @@
         </div>
     </div>
 
-    <!-- File tables -->
-    <div class="d-flex p-3 flex-lg-row flex-column">
-        <div id="publicFiles" class="flex-fill mb-4 mr-lg-4">
-            <h4 class="justify-content-center">Public Files</h4>
-            <div class="table-responsive">
-                <table id="publicFileTable" class="table table-bordered" aria-label="Public files">
-                    <thead class="thead-light">
-                        <tr>
-                            <th scope="col">Filename</th>
-                            <th scope="col">Filesize</th>
-                            <th scope="col">Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    </tbody>
-                </table>
+    <details open>
+        <summary>Files</summary>
+
+        <!-- File tables -->
+        <div class="d-flex p-3 flex-lg-row flex-column">
+            <div id="publicFiles" class="flex-fill mb-4 mr-lg-4">
+                <h4 class="justify-content-center">Public Files</h4>
+                <div class="table-responsive">
+                    <table id="publicFileTable" class="table table-bordered" aria-label="Public files">
+                        <thead class="thead-light">
+                            <tr>
+                                <th scope="col">Filename</th>
+                                <th scope="col">Filesize</th>
+                                <th scope="col">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+
+                <button id="publicUploadButton" class="btn btn-lg btn-primary uploadButton float-left" type="button">
+                    Upload File
+                    <span class="iconify icon-medium" data-icon="mdi:upload" data-inline="false"></span>
+                </button>
+                <button id="publicDeleteAll" class="btn btn-lg btn-danger float-right" type="button">
+                    DELETE ALL
+                </button>
+
+                <input id="publicUploadInput" type="file" name="uploads[]" multiple="multiple"
+                    style="display: none;"></br>
             </div>
 
-            <button id="publicUploadButton" class="btn btn-lg btn-primary uploadButton float-left" type="button">
-                Upload File
-                <span class="iconify icon-medium" data-icon="mdi:upload" data-inline="false"></span>
-            </button>
-            <button id="publicDeleteAll" class="btn btn-lg btn-danger float-right" type="button">
-                DELETE ALL
-            </button>
+            <div id="privateFiles" class="flex-fill">
+                <h4 class="justify-content-center">Private Files</h4>
+                <div class="table-responsive">
+                    <table id="privateFileTable" class="table table-bordered" aria-label="Private files">
+                        <thead class="thead-light">
+                            <tr>
+                                <th scope="col">Filename</th>
+                                <th scope="col">Filesize</th>
+                                <th scope="col">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+                <button id="privateUploadButton" class="btn btn-lg btn-info uploadButton float-left" type="button">
+                    Upload File
+                    <span class="iconify icon-medium" data-icon="mdi:upload" data-inline="false"></span>
+                </button>
+                <button id="privateDeleteAll" class="btn btn-lg btn-danger float-right" type="button">
+                    DELETE ALL
+                </button>
 
-            <input id="publicUploadInput" type="file" name="uploads[]" multiple="multiple" style="display: none;"></br>
-        </div>
-
-        <div id="privateFiles" class="flex-fill">
-            <h4 class="justify-content-center">Private Files</h4>
-            <div class="table-responsive">
-                <table id="privateFileTable" class="table table-bordered" aria-label="Private files">
-                    <thead class="thead-light">
-                        <tr>
-                            <th scope="col">Filename</th>
-                            <th scope="col">Filesize</th>
-                            <th scope="col">Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    </tbody>
-                </table>
-            </div>
-            <button id="privateUploadButton" class="btn btn-lg btn-info uploadButton float-left" type="button">
-                Upload File
-                <span class="iconify icon-medium" data-icon="mdi:upload" data-inline="false"></span>
-            </button>
-            <button id="privateDeleteAll" class="btn btn-lg btn-danger float-right" type="button">
-                DELETE ALL
-            </button>
-
-            <input id="privateUploadInput" type="file" name="uploads[]" multiple="multiple" style="display: none;"></br>
-        </div>
-    </div>
-    <div id="uploadContainer" class="fixed-bottom pb-4" style="font-weight: 500; font-size: 16pt;">
-        <div class="mx-auto">
-            <span>Current File: </span> <span id="uploadCurrentFileName"></span>
-        </div>
-
-        <div class="progress mx-auto w-75 position-relative" style="height: 16px;">
-            <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar">
-                <span class="justify-content-center d-flex position-absolute w-100 back">28 KB / 80 KB</span>
-                <span class="justify-content-center d-flex position-absolute w-100 front">28 KB / 80 KB</span>
+                <input id="privateUploadInput" type="file" name="uploads[]" multiple="multiple"
+                    style="display: none;"></br>
             </div>
         </div>
-    </div>
+        <div id="uploadContainer" class="fixed-bottom pb-4" style="font-weight: 500; font-size: 16pt;">
+            <div class="mx-auto">
+                <span>Current File: </span> <span id="uploadCurrentFileName"></span>
+            </div>
+
+            <div class="progress mx-auto w-75 position-relative" style="height: 16px;">
+                <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar">
+                    <span class="justify-content-center d-flex position-absolute w-100 back">28 KB / 80 KB</span>
+                    <span class="justify-content-center d-flex position-absolute w-100 front">28 KB / 80 KB</span>
+                </div>
+            </div>
+        </div>
+    </details>
+    <!-- Messages display -->
+    <!-- <details>
+        <summary>Messages</summary>
+
+        <div class="d-flex p-3 flex-lg-row flex-column">
+            <div id="publicMessages" class="flex-fill mb-4 mr-lg-4">
+                <h4 class="justify-content-center">Public Messages</h4>
+                <div class="table-responsive">
+                    <table id="privateMessageTable" class="table table-bordered" aria-label="Private files">
+                        <thead class="thead-light">
+                            <tr>
+                                <th scope="col">Message</th>
+                                <th scope="col">Delete</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="form-group">
+                    <label for="newUserMessage">Message</label>
+                    <textarea class="form-control" id="publicNewMessageText" placeholder="Your message"></textarea>
+                </div>
+                <button id="publicNewMessageButton" class="btn btn-lg btn-info uploadButton float-left" type="button">
+                    Send Message
+                    <span class="iconify icon-medium" data-icon="mdi:send" data-inline="false"></span>
+                </button>
+            </div>
+
+            <div id="privateMessages" class="flex-fill">
+
+            </div>
+        </div>
+    </details> -->
 </body>
 
 </html>
